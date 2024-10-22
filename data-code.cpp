@@ -1,3 +1,5 @@
+//sacar los algoritmos de ordenamiento, de las clases queue y stack cuando ya lo haya hecho solo llamarlas
+
 #include <iostream> // Biblioteca estándar de C++ para la entrada y salida (cout, cin)
 #include <algorithm> // Biblioteca para usar funciones estándar como sort, max_element, min_element
 #include <vector> // Biblioteca para utilizar el contenedor vector
