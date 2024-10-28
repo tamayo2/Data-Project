@@ -25,39 +25,39 @@ private:
 public:
     Stack() : top(nullptr), size(0) {} //constructor que inicializa la pila con tamaño 0 y sin elementos.
 
-    void push(int value) {
-        Node* newNode = new Node();
-        newNode->data = value;
-        newNode->next = top;
-        top = newNode;
-        size++;
-        cout << "Elemento " << value << " agregado a la pila.\n";
+    void push(int value) { //funcion para agregar un elemento a la pila
+        Node* newNode = new Node(); //crea un nuevo nodo
+        newNode->data = value; //asigna el valor al nodo
+        newNode->next = top; //el nodo apunta al nodo actual en el top
+        top = newNode; //actualiza el top para apuntar al nuevo nodo
+        size++; //incrementa el tamaño de la pila
+        cout << "Elemento " << value << " agregado a la pila.\n"; //mensaje de confirmacion
     }
 
-    void pop() {
-        if (top == nullptr) {
+    void pop() { //funcion para eliminar el ultimo elemento de la pila
+        if (top == nullptr) { //verifica si la pila esta vacia
             cout << "La pila está vacía.\n";
-            return;
+            return; //sale si no hay elementos para eliminar
         }
-        Node* temp = top;
-        top = top->next;
+        Node* temp = top; //guarda el nodo actual del top
+        top = top->next; //actualiza al top al siguiente nodo 
         cout << "Elemento " << temp->data << " eliminado de la pila.\n";
-        delete temp;
-        size--;
+        delete temp; //libera la memoria del nodo eliminado
+        size--; //decrementa el tamaño de la pila
     }
 
-    int* toArray() {
-        int* elements = new int[size];
-        Node* temp = top;
-        for (int i = 0; i < size; i++) {
-            elements[i] = temp->data;
-            temp = temp->next;
+    int* toArray() { //convierte la pila a un arreglo
+        int* elements = new int[size]; //reserva memoria para el arreglo
+        Node* temp = top; //puntero auxiliar para recorrer la pila
+        for (int i = 0; i < size; i++) { 
+            elements[i] = temp->data; //copia el dato de cada nodo al arreglo
+            temp = temp->next; //avanza al siguiente nodo
         }
-        return elements;
+        return elements; //retorna el arreglo
     }
 
-    void fromArray(int* elements) {
-        while (top != nullptr) {
+    void fromArray(int* elements) { //convierte un arreglo en una pila
+        while (top != nullptr) { //limpia la pila actual
             Node* temp = top;
             top = top->next;
             delete temp;
