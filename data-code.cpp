@@ -1,29 +1,29 @@
-#include <iostream>
-#include <algorithm>
-#include <vector>
-#include <cmath>
-#ifdef _WIN32
-#include <windows.h>
-#else
-#include <unistd.h>
+#include <iostream> //Incluye la biblioteca estandar para operaciones de entrada y salida
+#include <algorithm> //Incluye la biblioteca para algoritmos como 'max_element' y 'min_element'
+#include <vector> //incluye el contenedor vector para usar algoritmos de ordenamiento como bicketSort
+#include <cmath> //incluye la biblioteca matematica, utilizada en algunas funciones
+#ifdef _WIN32 //verfica si el sistema operativo es windows
+#include <windows.h> //incluye las funciones especificas de windows (como system cls, para limpiar pantalla)
+#else //si no es windows entonces es linux macos
+#include <unistd.h> //incluye funciones de unix, como system clear para limpiar pantalla
 #endif
 
-using namespace std;
+using namespace std; //para evitar escribir std::
 
 // Estructura de nodo de la lista enlazada
 struct Node {
-    int data;
-    Node* next;
+    int data; //Dato entero que almacena el nodo
+    Node* next; //puntero al siguiente nodo en la lista enlazada
 };
 
-// Clase Pila (Stack)
+// Clase que define el comportamiento de una Pila (LIFO)
 class Stack {
 private:
-    Node* top;
-    int size;
+    Node* top; //puntero que aounta al ultimo nodo agregado en la pila
+    int size; //almacena el numero de elementos en la pila
 
 public:
-    Stack() : top(nullptr), size(0) {}
+    Stack() : top(nullptr), size(0) {} //constructor que inicializa la pila con tamaño 0 y sin elementos.
 
     void push(int value) {
         Node* newNode = new Node();
