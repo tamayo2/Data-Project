@@ -62,33 +62,6 @@ public:
         cout << endl;
     }
 
-    void bubbleSort() {
-        if (size == 0) {
-            cout << "No hay elementos en la pila, no se puede ordenar\n";
-            return;
-        }
-
-        int* elements = new int[size];
-        Node* temp = top;
-        for (int i = 0; i < size; i++) {
-            elements[i] = temp->data;
-            temp = temp->next;
-        }
-
-        // Bubble Sort
-        for (int i = 0; i < size - 1; i++) {
-            for (int j = 0; j < size - i - 1; j++) {
-                if (elements[j] > elements[j + 1]) {
-                    swap(elements[j], elements[j + 1]);
-                }
-            }
-        }
-
-        reconstructStack(elements);
-        delete[] elements;
-        cout << "La pila ha sido ordenada usando Bubble Sort.\n";
-    }
-
     void selectionSort() {
         if (size == 0) {
             cout << "No hay elementos en la pila, no se puede ordenar\n";
