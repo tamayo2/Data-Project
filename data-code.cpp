@@ -62,64 +62,6 @@ public:
         cout << endl;
     }
 
-    void selectionSort() {
-        if (size == 0) {
-            cout << "No hay elementos en la pila, no se puede ordenar\n";
-            return;
-        }
-
-        int* elements = new int[size];
-        Node* temp = top;
-        for (int i = 0; i < size; i++) {
-            elements[i] = temp->data;
-            temp = temp->next;
-        }
-
-        // Selection Sort
-        for (int i = 0; i < size - 1; i++) {
-            int minIndex = i;
-            for (int j = i + 1; j < size; j++) {
-                if (elements[j] < elements[minIndex]) {
-                    minIndex = j;
-                }
-            }
-            swap(elements[i], elements[minIndex]);
-        }
-
-        reconstructStack(elements);
-        delete[] elements;
-        cout << "La pila ha sido ordenada usando Selection Sort.\n";
-    }
-
-    void insertionSort() {
-        if (size == 0) {
-            cout << "No hay elementos en la pila, no se puede ordenar\n";
-            return;
-        }
-
-        int* elements = new int[size];
-        Node* temp = top;
-        for (int i = 0; i < size; i++) {
-            elements[i] = temp->data;
-            temp = temp->next;
-        }
-
-        // Insertion Sort
-        for (int i = 1; i < size; i++) {
-            int key = elements[i];
-            int j = i - 1;
-            while (j >= 0 && elements[j] > key) {
-                elements[j + 1] = elements[j];
-                j--;
-            }
-            elements[j + 1] = key;
-        }
-
-        reconstructStack(elements);
-        delete[] elements;
-        cout << "La pila ha sido ordenada usando Insertion Sort.\n";
-    }
-
     void mergeSort() {
         if (size == 0) {
             cout << "No hay elementos en la pila, no se puede ordenar\n";
