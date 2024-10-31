@@ -129,47 +129,47 @@ public:
 
     int* toArray() { // Convierte la cola a un arreglo
         int* elements = new int[size]; // Reserva memoria para el arreglo
-        Node* temp = front;
+        Node* temp = front;  // Puntero auxiliar para recorrer la cola
         for (int i = 0; i < size; i++) {
-            elements[i] = temp->data;
+            elements[i] = temp->data; // Copia el dato de cada nodo al arreglo
             temp = temp->next;
         }
-        return elements;
+        return elements; // Retorna el arreglo
     }
 
-    void fromArray(int* elements) {
-        while (front != nullptr) {
+    void fromArray(int* elements) { // Convierte un arreglo en una cola
+        while (front != nullptr) { // Limpia la cola actual
             Node* temp = front;
             front = front->next;
             delete temp;
         }
-        rear = nullptr;
+        rear = nullptr; // Reinicia rear a nullptr
         for (int i = 0; i < size; i++) {
-            enqueue(elements[i]);
+            enqueue(elements[i]); // Inserta cada elemento en la cola
         }
     }
 
-    void display() {
+    void display() { // Muestra los elementos en la cola
         if (front == nullptr) {
             cout << "La cola está vacía.\n";
             return;
         }
-        Node* temp = front;
+        Node* temp = front; // Puntero auxiliar para recorrer la cola
         cout << "Elementos en la cola: ";
         while (temp != nullptr) {
-            cout << temp->data << " ";
+            cout << temp->data << " "; // Imprime el valor de cada nodo
             temp = temp->next;
         }
         cout << endl;
     }
 
-    int getSize() const {
+    int getSize() const { // Retorna el tamaño actual de la cola
         return size;
     }
 };
 
 // Algoritmos de ordenamiento independientes
-void bubbleSort(int* arr, int size) {
+void bubbleSort(int* arr, int size) {  // Ordenamiento Burbuja
     for (int i = 0; i < size - 1; i++) {
         for (int j = 0; j < size - i - 1; j++) {
             if (arr[j] > arr[j + 1]) {
@@ -340,20 +340,20 @@ void timSort(int* arr, int size) {
 // Función para limpiar pantalla
 void clearScreen() {
 #ifdef _WIN32
-    system("cls");
+    system("cls"); // Limpia la pantalla en Windows
 #else
-    system("clear");
+    system("clear");  // Limpia la pantalla en sistemas Unix
 #endif
 }
 
 // Menú principal
 void menu() {
-    Stack stack;
-    Queue queue;
-    int choice, subChoice, value;
+    Stack stack; // Crea una instancia de Stack
+    Queue queue; // Crea una instancia de Queue
+    int choice, subChoice, value; // Variables para manejar opciones del menú y entrada de usuario
 
     do {
-        clearScreen();
+        clearScreen(); // Limpia la pantalla antes de mostrar el menú
         cout << "\n--- Menú Principal ---\n";
         cout << "1. Usar Pila (LIFO)\n";
         cout << "2. Usar Cola (FIFO)\n";
@@ -361,7 +361,7 @@ void menu() {
         cout << "Elige una opción: ";
         cin >> choice;
 
-        switch (choice) {
+        switch (choice) {  // Evalúa la elección del usuario
             case 1: // Menú de Pila
                 do {
                     clearScreen();
@@ -499,6 +499,6 @@ void menu() {
 }
 
 int main() {
-    menu();
-    return 0;
+    menu();  // Llama a la función principal del menú
+    return 0; // Termina el programa
 }
