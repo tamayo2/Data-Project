@@ -94,41 +94,41 @@ private:
     int size; // Almacena el número de elementos en la cola
 
 public:
-    Queue() : front(nullptr), rear(nullptr), size(0) {}
+    Queue() : front(nullptr), rear(nullptr), size(0) {} // Constructor que inicializa la cola vacía
 
-    void enqueue(int value) {
+    void enqueue(int value) {  // Agrega un elemento al final de la cola
         Node* newNode = new Node();
         newNode->data = value;
         newNode->next = nullptr;
 
-        if (rear == nullptr) {
+        if (rear == nullptr) { // Si la cola está vacía, ambos punteros apuntan al nuevo nodo
             front = rear = newNode;
-        } else {
+        } else {  // Si no está vacía, añade al final
             rear->next = newNode;
             rear = newNode;
         }
-        size++;
+        size++;   // Incrementa el tamaño de la cola
         cout << "Elemento " << value << " agregado a la cola.\n";
     }
 
-    void dequeue() {
-        if (front == nullptr) {
+    void dequeue() { // Elimina el primer elemento de la cola
+        if (front == nullptr) { // Verifica si la cola está vacía
             cout << "La cola está vacía.\n";
             return;
         }
-        Node* temp = front;
-        front = front->next;
+        Node* temp = front;  // Guarda el nodo del frente
+        front = front->next;  // Actualiza el frente al siguiente nodo
 
-        if (front == nullptr) {
+        if (front == nullptr) { // Si la cola queda vacía, rear también se actualiza
             rear = nullptr;
         }
         cout << "Elemento " << temp->data << " eliminado de la cola.\n";
-        delete temp;
-        size--;
+        delete temp; // Libera la memoria del nodo eliminado
+        size--; // Decrementa el tamaño de la cola
     }
 
-    int* toArray() {
-        int* elements = new int[size];
+    int* toArray() { // Convierte la cola a un arreglo
+        int* elements = new int[size]; // Reserva memoria para el arreglo
         Node* temp = front;
         for (int i = 0; i < size; i++) {
             elements[i] = temp->data;
