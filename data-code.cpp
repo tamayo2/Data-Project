@@ -62,36 +62,36 @@ public:
             top = top->next;
             delete temp;
         }
-        for (int i = size - 1; i >= 0; i--) {
+        for (int i = size - 1; i >= 0; i--) { // Agrega cada elemento al top
             push(elements[i]);
         }
     }
 
-    void display() {
+    void display() { // Muestra los elementos en la pila
         if (top == nullptr) {
             cout << "La pila está vacía.\n";
             return;
         }
-        Node* temp = top;
+        Node* temp = top; // Puntero auxiliar para recorrer la pila
         cout << "Elementos en la pila: ";
         while (temp != nullptr) {
-            cout << temp->data << " ";
-            temp = temp->next;
+            cout << temp->data << " "; // Imprime el valor de cada nodo
+            temp = temp->next; // Avanza al siguiente nodo
         }
         cout << endl;
     }
     
-    int getSize() const {
+    int getSize() const { // Retorna el tamaño actual de la pila
         return size;
     }
 };
 
-// Clase Cola (Queue)
+// Clase que define el comportamiento de una cola (FIFO)
 class Queue {
 private:
-    Node* front;
-    Node* rear;
-    int size;
+    Node* front; // Puntero al primer nodo de la cola
+    Node* rear; // Puntero al último nodo de la cola
+    int size; // Almacena el número de elementos en la cola
 
 public:
     Queue() : front(nullptr), rear(nullptr), size(0) {}
