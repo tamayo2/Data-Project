@@ -10,6 +10,371 @@
 
 using namespace std; //para evitar escribir std::
 
+// Nodo para los árboles
+struct TreeNode {
+    int data;
+    TreeNode* left;
+    TreeNode* right;
+    int height; // Usado para AVL
+    bool color; // Usado para Rojos y Negros
+    TreeNode(int val) : data(val), left(nullptr), right(nullptr), height(1), color(true) {}
+};
+
+// Clase para Árbol Binario de Búsqueda (ABB)
+class BinarySearchTree {
+public:
+    TreeNode* root;
+    BinarySearchTree() : root(nullptr) {}
+
+    TreeNode* insert(TreeNode* node, int value) {
+        if (!node) return new TreeNode(value);
+        if (value < node->data)
+            node->left = insert(node->left, value);
+        else if (value > node->data)
+            node->right = insert(node->right, value);
+        return node;
+    }
+
+    TreeNode* findMin(TreeNode* node) {
+        while (node->left) node = node->left;
+        return node;
+    }
+
+    TreeNode* remove(TreeNode* node, int value) {
+        if (!node) return node;
+        if (value < node->data)
+            node->left = remove(node->left, value);
+        else if (value > node->data)
+            node->right = remove(node->right, value);
+        else {
+            if (!node->left || !node->right) {
+                TreeNode* temp = node->left ? node->left : node->right;
+                delete node;
+                return temp;
+            }
+            TreeNode* temp = findMin(node->right);
+            node->data = temp->data;
+            node->right = remove(node->right, temp->data);
+        }
+        return node;
+    }
+
+    void inorder(TreeNode* node) {
+        if (node) {
+            inorder(node->left);
+            cout << node->data << " ";
+            inorder(node->right);
+        }
+    }
+
+    void preorder(TreeNode* node) {
+        if (node) {
+            cout << node->data << " ";
+            preorder(node->left);
+            preorder(node->right);
+        }
+    }
+
+    void postorder(TreeNode* node) {
+        if (node) {
+            postorder(node->left);
+            postorder(node->right);
+            cout << node->data << " ";
+        }
+    }
+
+    TreeNode* search(TreeNode* node, int value) {
+        if (!node || node->data == value) return node;
+        if (value < node->data) return search(node->left, value);
+        return search(node->right, value);
+    }
+};
+
+// Clase para Árbol AVL
+class AVLTree {
+public:
+    TreeNode* root;
+    AVLTree() : root(nullptr) {}
+
+    int height(TreeNode* node) {
+        return node ? node->height : 0;
+    }
+
+    int balanceFactor(TreeNode* node) {
+        return node ? height(node->left) - height(node->right) : 0;
+    }
+
+    TreeNode* rotateRight(TreeNode* y) {
+        TreeNode* x = y->left;
+        TreeNode* T = x->right;
+        x->right = y;
+        y->left = T;
+        y->height = max(height(y->left), height(y->right)) + 1;
+        x->height = max(height(x->left), height(x->right)) + 1;
+        return x;
+    }
+
+    TreeNode* rotateLeft(TreeNode* x) {
+        TreeNode* y = x->right;
+        TreeNode* T = y->left;
+        y->left = x;
+        x->right = T;
+        x->height = max(height(x->left), height(x->right)) + 1;
+        y->height = max(height(y->left), height(y->right)) + 1;
+        return y;
+    }
+
+    TreeNode* insert(TreeNode* node, int value) {
+        if (!node) return new TreeNode(value);
+        if (value < node->data)
+            node->left = insert(node->left, value);
+        else if (value > node->data)
+            node->right = insert(node->right, value);
+
+        node->height = 1 + max(height(node->left), height(node->right));
+        int balance = balanceFactor(node);
+
+        if (balance > 1 && value < node->left->data) return rotateRight(node);
+        if (balance < -1 && value > node->right->data) return rotateLeft(node);
+        if (balance > 1 && value > node->left->data) {
+            node->left = rotateLeft(node->left);
+            return rotateRight(node);
+        }
+        if (balance < -1 && value < node->right->data) {
+            node->right = rotateRight(node->right);
+            return rotateLeft(node);
+        }
+        return node;
+    }
+
+    TreeNode* remove(TreeNode* node, int value) {
+        if (!node) return node;
+
+        if (value < node->data)
+            node->left = remove(node->left, value);
+        else if (value > node->data)
+            node->right = remove(node->right, value);
+        else {
+            if (!node->left || !node->right) {
+                TreeNode* temp = node->left ? node->left : node->right;
+                delete node;
+                return temp;
+            }
+            TreeNode* temp = findMin(node->right);
+            node->data = temp->data;
+            node->right = remove(node->right, temp->data);
+        }
+
+        node->height = 1 + max(height(node->left), height(node->right));
+        int balance = balanceFactor(node);
+
+        if (balance > 1 && balanceFactor(node->left) >= 0)
+            return rotateRight(node);
+
+        if (balance > 1 && balanceFactor(node->left) < 0) {
+            node->left = rotateLeft(node->left);
+            return rotateRight(node);
+        }
+
+        if (balance < -1 && balanceFactor(node->right) <= 0)
+            return rotateLeft(node);
+
+        if (balance < -1 && balanceFactor(node->right) > 0) {
+            node->right = rotateRight(node->right);
+            return rotateLeft(node);
+        }
+
+        return node;
+    }
+
+    TreeNode* findMin(TreeNode* node) {
+        while (node->left) node = node->left;
+        return node;
+    }
+
+    TreeNode* search(TreeNode* node, int value) {
+        if (!node || node->data == value) return node;
+        if (value < node->data) return search(node->left, value);
+        return search(node->right, value);
+    }
+};
+
+
+// Clase para Árbol Rojo-Negro
+class RedBlackTree {
+private:
+    struct RBNode {
+        int data;
+        RBNode* left;
+        RBNode* right;
+        RBNode* parent;
+        bool color; // true = rojo, false = negro
+
+        RBNode(int val) : data(val), left(nullptr), right(nullptr), parent(nullptr), color(true) {}
+    };
+
+    RBNode* root;
+
+    void rotateLeft(RBNode*& root, RBNode*& node) {
+        RBNode* nodeRight = node->right;
+        node->right = nodeRight->left;
+
+        if (nodeRight->left != nullptr)
+            nodeRight->left->parent = node;
+
+        nodeRight->parent = node->parent;
+
+        if (node->parent == nullptr)
+            root = nodeRight;
+        else if (node == node->parent->left)
+            node->parent->left = nodeRight;
+        else
+            node->parent->right = nodeRight;
+
+        nodeRight->left = node;
+        node->parent = nodeRight;
+    }
+
+    void rotateRight(RBNode*& root, RBNode*& node) {
+        RBNode* nodeLeft = node->left;
+        node->left = nodeLeft->right;
+
+        if (nodeLeft->right != nullptr)
+            nodeLeft->right->parent = node;
+
+        nodeLeft->parent = node->parent;
+
+        if (node->parent == nullptr)
+            root = nodeLeft;
+        else if (node == node->parent->left)
+            node->parent->left = nodeLeft;
+        else
+            node->parent->right = nodeLeft;
+
+        nodeLeft->right = node;
+        node->parent = nodeLeft;
+    }
+
+    void balanceInsert(RBNode*& root, RBNode*& node) {
+        RBNode* parent = nullptr;
+        RBNode* grandparent = nullptr;
+
+        while (node != root && node->color && node->parent->color) {
+            parent = node->parent;
+            grandparent = parent->parent;
+
+            if (parent == grandparent->left) {
+                RBNode* uncle = grandparent->right;
+
+                if (uncle != nullptr && uncle->color) { // Caso 1: El tío es rojo
+                    grandparent->color = true;
+                    parent->color = false;
+                    uncle->color = false;
+                    node = grandparent;
+                } else {
+                    if (node == parent->right) { // Caso 2: El nodo es un hijo derecho
+                        rotateLeft(root, parent);
+                        node = parent;
+                        parent = node->parent;
+                    }
+
+                    // Caso 3: El nodo es un hijo izquierdo
+                    rotateRight(root, grandparent);
+                    swap(parent->color, grandparent->color);
+                    node = parent;
+                }
+            } else {
+                RBNode* uncle = grandparent->left;
+
+                if (uncle != nullptr && uncle->color) { // Caso 1: El tío es rojo
+                    grandparent->color = true;
+                    parent->color = false;
+                    uncle->color = false;
+                    node = grandparent;
+                } else {
+                    if (node == parent->left) { // Caso 2: El nodo es un hijo izquierdo
+                        rotateRight(root, parent);
+                        node = parent;
+                        parent = node->parent;
+                    }
+
+                    // Caso 3: El nodo es un hijo derecho
+                    rotateLeft(root, grandparent);
+                    swap(parent->color, grandparent->color);
+                    node = parent;
+                }
+            }
+        }
+        root->color = false; // La raíz siempre es negra
+    }
+
+    void inorder(RBNode* node) {
+        if (node != nullptr) {
+            inorder(node->left);
+            cout << node->data << " ";
+            inorder(node->right);
+        }
+    }
+
+    RBNode* search(RBNode* node, int value) {
+        if (node == nullptr || node->data == value)
+            return node;
+        if (value < node->data)
+            return search(node->left, value);
+        return search(node->right, value);
+    }
+
+public:
+    RedBlackTree() : root(nullptr) {}
+
+    void insert(int value) {
+        RBNode* node = new RBNode(value);
+        if (root == nullptr) {
+            root = node;
+            root->color = false; // La raíz es negra
+            return;
+        }
+
+        RBNode* temp = root;
+        RBNode* parent = nullptr;
+
+        while (temp != nullptr) {
+            parent = temp;
+            if (value < temp->data)
+                temp = temp->left;
+            else
+                temp = temp->right;
+        }
+
+        node->parent = parent;
+
+        if (value < parent->data)
+            parent->left = node;
+        else
+            parent->right = node;
+
+        balanceInsert(root, node);
+    }
+
+    void search(int value) {
+        RBNode* result = search(root, value);
+        if (result != nullptr)
+            cout << "Elemento encontrado: " << result->data << endl;
+        else
+            cout << "Elemento no encontrado.\n";
+    }
+
+    void inorder() {
+        inorder(root);
+        cout << endl;
+    }
+
+    void remove(int value) {
+        cout << "La eliminación para Árbol Rojo-Negro está pendiente de implementación.\n";
+    }
+};
+
+
 // Estructura de nodo de la lista enlazada
 struct Node {
     int data; //Dato entero que almacena el nodo
@@ -350,14 +715,19 @@ void clearScreen() {
 void menu() {
     Stack stack; // Crea una instancia de Stack
     Queue queue; // Crea una instancia de Queue
+    BinarySearchTree bst; // Crea una instancia de Árbol Binario de Búsqueda
+    AVLTree avl; // Crea una instancia de Árbol AVL
+    RedBlackTree rbt; // Crea una instancia de Árbol Rojo-Negro
     int choice, subChoice, value; // Variables para manejar opciones del menú y entrada de usuario
 
     do {
-        clearScreen(); // Limpia la pantalla antes de mostrar el menú
         cout << "\n--- Menú Principal ---\n";
         cout << "1. Usar Pila (LIFO)\n";
         cout << "2. Usar Cola (FIFO)\n";
-        cout << "3. Salir\n";
+        cout << "3. Usar Árbol Binario de Búsqueda (ABS)\n";
+        cout << "4. Usar Árbol AVL\n";
+        cout << "5. Usar Árbol Rojo-Negro\n";
+        cout << "6. Salir\n";
         cout << "Elige una opción: ";
         cin >> choice;
 
@@ -488,14 +858,140 @@ void menu() {
                 } while (subChoice != 5);
                 break;
 
-            case 3:
+            case 3: // Menú de Árbol Binario de Búsqueda (ABB)
+                do {
+                    clearScreen();
+                    cout << "\n--- Menú Árbol Binario de Búsqueda (ABS) ---\n";
+                    cout << "1. Insertar elemento\n";
+                    cout << "2. Buscar elemento\n";
+                    cout << "3. Eliminar elemento\n";
+                    cout << "4. Mostrar en recorrido inorden\n";
+                    cout << "5. Regresar al menú principal\n";
+                    cout << "Elige una opción: ";
+                    cin >> subChoice;
+
+                    switch (subChoice) {
+                        case 1:
+                            cout << "Introduce el valor a insertar: ";
+                            cin >> value;
+                            bst.root = bst.insert(bst.root, value);
+                            break;
+                        case 2:
+                            cout << "Introduce el valor a buscar: ";
+                            cin >> value;
+                            cout << (bst.search(bst.root, value) ? "Elemento encontrado.\n" : "Elemento no encontrado.\n");
+                            break;
+                        case 3:
+                            cout << "Introduce el valor a eliminar: ";
+                            cin >> value;
+                            bst.root = bst.remove(bst.root, value);
+                            break;
+                        case 4:
+                            cout << "Recorrido inorden: ";
+                            bst.inorder(bst.root);
+                            cout << endl;
+                            break;
+                        case 5:
+                            break;
+                        default:
+                            cout << "Opción no válida.\n";
+                    }
+                    if (subChoice != 5) {
+                        cout << "Presiona Enter para continuar...";
+                        cin.ignore();
+                        cin.get();
+                    }
+                } while (subChoice != 5);
+                break;
+
+            case 4: // Menú de Árbol AVL
+                do {
+                    clearScreen();
+                    cout << "\n--- Menú Árbol AVL ---\n";
+                    cout << "1. Insertar elemento\n";
+                    cout << "2. Buscar elemento\n";
+                    cout << "3. Mostrar en recorrido inorden\n";
+                    cout << "4. Regresar al menú principal\n";
+                    cout << "Elige una opción: ";
+                    cin >> subChoice;
+
+                    switch (subChoice) {
+                        case 1:
+                            cout << "Introduce el valor a insertar: ";
+                            cin >> value;
+                            avl.root = avl.insert(avl.root, value);
+                            break;
+                        case 2:
+                            cout << "Introduce el valor a buscar: ";
+                            cin >> value;
+                            cout << (avl.search(avl.root, value) ? "Elemento encontrado.\n" : "Elemento no encontrado.\n");
+                            break;
+                        case 3:
+                            cout << "Recorrido inorden: ";
+                            bst.inorder(avl.root);
+                            cout << endl;
+                            break;
+                        case 4:
+                            break;
+                        default:
+                            cout << "Opción no válida.\n";
+                    }
+                    if (subChoice != 4) {
+                        cout << "Presiona Enter para continuar...";
+                        cin.ignore();
+                        cin.get();
+                    }
+                } while (subChoice != 4);
+                break;
+
+            case 5: // Menú de Árbol Rojo-Negro
+                do {
+                    clearScreen();
+                    cout << "\n--- Menú Árbol Rojo-Negro ---\n";
+                    cout << "1. Insertar elemento\n";
+                    cout << "2. Buscar elemento\n";
+                    cout << "3. Eliminar elemento\n";
+                    cout << "4. Regresar al menú principal\n";
+                    cout << "Elige una opción: ";
+                    cin >> subChoice;
+
+                    switch (subChoice) {
+                        case 1:
+                            cout << "Introduce el valor a insertar: ";
+                            cin >> value;
+                            rbt.insert(value);
+                            break;
+                        case 2:
+                            cout << "Introduce el valor a buscar: ";
+                            cin >> value;
+                            rbt.search(value);
+                            break;
+                        case 3:
+                            cout << "Introduce el valor a eliminar: ";
+                            cin >> value;
+                            rbt.remove(value);
+                            break;
+                        case 4:
+                            break;
+                        default:
+                            cout << "Opción no válida.\n";
+                    }
+                    if (subChoice != 4) {
+                        cout << "Presiona Enter para continuar...";
+                        cin.ignore();
+                        cin.get();
+                    }
+                } while (subChoice != 4);
+                break;
+
+            case 6:
                 cout << "Saliendo del programa...\n";
                 break;
 
             default:
                 cout << "Opción no válida.\n";
         }
-    } while (choice != 3);
+    } while (choice != 6);
 }
 
 int main() {
